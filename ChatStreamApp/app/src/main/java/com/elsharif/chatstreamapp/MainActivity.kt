@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.elsharif.chatstreamapp.connect.ConnectScreen
 import com.elsharif.chatstreamapp.connect.ConnectViewModel
+import com.elsharif.chatstreamapp.connect.SplashScreen
 import com.elsharif.chatstreamapp.ui.theme.ChatStreamAppTheme
 import com.elsharif.chatstreamapp.video.CallState
 import com.elsharif.chatstreamapp.video.VideoCallScreen
@@ -36,18 +37,22 @@ class MainActivity : ComponentActivity() {
                     val navController= rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination =ConnectRoute,
+                        startDestination ="splash",
                         modifier = Modifier.padding(innerPadding)
                     ){
-                        composable<ConnectRoute> {
-                            val viewModel = koinViewModel<ConnectViewModel>()
+
+                        composable("splash") {
+                            SplashScreen(navController = navController)
+                        }
+                        composable("connect") {
+                        val viewModel = koinViewModel<ConnectViewModel>()
                             val state=viewModel.state
 
                             LaunchedEffect(key1 = state.isConnected) {
                                 if(state.isConnected){
-                                    navController.navigate(VideoCallRoute){
-                                        popUpTo(ConnectRoute){
-                                            inclusive=true
+                                    navController.navigate("videoCall") {
+                                        popUpTo("connect") {
+                                            inclusive = true
                                         }
                                     }
                                 }
@@ -56,14 +61,14 @@ class MainActivity : ComponentActivity() {
                             ConnectScreen(state = state, onAction = viewModel::onAction )
 
                         }
-                        composable<VideoCallRoute> {
+                        composable("videoCall") {
                             val viewModel = koinViewModel<VideoCallViewModel>()
                             val state=viewModel.state
                             LaunchedEffect(key1 = state.callState) {
                                 if(state.callState==CallState.ENDED){
-                                    navController.navigate(ConnectRoute){
-                                        popUpTo(VideoCallRoute){
-                                            inclusive=true
+                                    navController.navigate("connect") {
+                                        popUpTo("videoCall") {
+                                            inclusive = true
                                         }
                                     }
                                 }

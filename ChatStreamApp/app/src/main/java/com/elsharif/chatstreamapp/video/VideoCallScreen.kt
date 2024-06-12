@@ -94,6 +94,7 @@ fun VideoCallScreen(
 
                     }
                     ),
+
                 onCallAction = {action->
                     if(action== LeaveCall){
                         onAction(VideoCallAction.OnDisconnectClick)
